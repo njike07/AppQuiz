@@ -1,67 +1,56 @@
-import 'package:firstapp/model/question.dart';
+import 'model/question.dart';
 
 class Serverquestion {
   int indexQuestion = 0;
   List<Question> questions = [
     Question(
-        intitule: "quel est la capital de france ",
-        options: ["Douala", "Paris", "Quebeck city"],
-        indexbonnereponse: 1),
+      intitule: "Je me fais facilement des amis.",
+      options: [
+        "Pas d'accord",
+        "Pas du tout d'accord",
+        "Neutre",
+        "D'accord",
+        "Tout à fait d'accord"
+      ],
+      indexbonnereponse: 3,
+    ),
     Question(
-        intitule: "la monnaie du japon est ? ",
-        options: ["oui", "non", "Aucun"],
-        indexbonnereponse: 1),
-    Question(
-        intitule: "quel est la capital du Cameroun ",
-        options: ["Douala", "Paris", "Yaounde"],
-        indexbonnereponse: 1),
-    Question(
-        intitule: "quel est la monnaie de france ",
-        options: ["euro", "Dollar", "Francs"],
-        indexbonnereponse: 1),
-    Question(
-        intitule: "quel est la capital de france ",
-        options: ["Douala", "Paris", "Quebeck city"],
-        indexbonnereponse: 1),
+      intitule: "J’ai beaucoup d’imagination.",
+      options: [
+        "Pas d'accord",
+        "Pas du tout d'accord",
+        "Neutre",
+        "D'accord",
+        "Tout à fait d'accord"
+      ],
+      indexbonnereponse: 4,
+    ),
+    // Ajoutez plus de questions ici
   ];
 
-  // Fonction pour obtenir l'intitulé de la question actuelle
-  String getintitule() {
-    return questions[indexQuestion].intitule;
+  String getIntitule() => questions[indexQuestion].intitule;
+
+  List<String> getOptions() => questions[indexQuestion].options;
+
+  int getIndexBonneReponse() => questions[indexQuestion].indexbonnereponse;
+
+  bool quizTerminer() => indexQuestion >= questions.length - 1;
+
+  int getTotalScorePossible() {
+    return questions.fold(
+        0, (sum, question) => sum + question.indexbonnereponse);
   }
 
-  // Fonction pour passer à la question suivante
   void prochaineQuestion() {
-    if (indexQuestion < (questions.length - 1)) {
-      indexQuestion++;
-    }
+    if (!quizTerminer()) indexQuestion++;
   }
 
-  // Fonction pour obtenir une option spécifique d'une question
-  String getOption(int index) {
-    // Vérifie si l'index demandé est valide
-
-    if (index >= 0 && index < questions[indexQuestion].options.length) {
-      return questions[indexQuestion].options[index];
-    } else {
-      return "Option invalide";
-    }
+  void reinitialiser() {
+    indexQuestion = 0;
+    questions.shuffle();
   }
 
-  // Fonction pour vérifier si le quiz est terminé
-  bool quizTerminer() {
-    return indexQuestion >= questions.length - 1;
-  }
-
-  // Fonction pour obtenir la bonne réponse de la question actuelle
-  String getBonneReponse() {
-    return questions[indexQuestion]
-        .options[questions[indexQuestion].indexbonnereponse];
+  int getTotalQuestions() {
+    return questions.length;
   }
 }
-
-  // fonction get option
-  // fonction quiz terminer
-  // fonction get bonnereponse
-  // commencer l'interface
-

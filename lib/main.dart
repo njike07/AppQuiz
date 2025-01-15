@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quiz/ServerQuestion.dart';
+//import 'package:FIRSTAPP-COPY/Model/question.dart';
+import 'ServerQuestion.dart'; // classe ServerQuestion
 
 void main() {
   runApp(const MyApp());
@@ -24,38 +25,40 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  ServerQuestion serveurQuestion = ServerQuestion();
+  Serverquestion serverQuestion = Serverquestion();
   int score = 0;
 
   void verifierReponse(int reponseUtilisateur) {
     setState(() {
-      if (serveurQuestion.quizTermine()) {
+      if (serverQuestion.getIndexBonneReponse() == reponseUtilisateur) {
+        score += serverQuestion.getIndexBonneReponse();
+      }
+
+      if (serverQuestion.quizTerminer()) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("Quiz terminé"),
-              content: Text("Votre score est $score"),
+              title: const Text("Quiz terminé"),
+              content: Text(
+                  "Votre score final est de $score. ${serverQuestion.getTotalQuestions()}"),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                     setState(() {
                       score = 0;
-                      serveurQuestion.reinitialiser();
+                      serverQuestion.reinitialiser();
                     });
                   },
-                  child: Text("Recommencer le quiz"),
+                  child: const Text("Recommencer"),
                 )
               ],
             );
           },
         );
       } else {
-        if (reponseUtilisateur == serveurQuestion.getIndexeBonneReponse()) {
-          score++;
-        }
-        serveurQuestion.prochaineQuestion();
+        serverQuestion.prochaineQuestion();
       }
     });
   }
@@ -64,11 +67,11 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quiz'),
+        title: const Text('Quiz'),
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -76,41 +79,38 @@ class _QuizPageState extends State<QuizPage> {
               Expanded(
                 flex: 5,
                 child: Text(
-                  serveurQuestion.getIntitule(),
+                  serverQuestion.getIntitule(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 25.0, fontWeight: FontWeight.bold),
                 ),
               ),
               Expanded(
                 flex: 5,
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: serveurQuestion
-                        .getOptions()
-                        .asMap()
-                        .entries
-                        .map((entry) => Padding(
-                              padding: EdgeInsets.symmetric(vertical: 7.0),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 16.0),
-                                    minimumSize: Size(double.infinity, 50.0)),
-                                child: Text(
-                                  entry.value,
-                                  style: TextStyle(fontSize: 18.0),
-                                ),
-                                onPressed: () => verifierReponse(entry.key),
-                              ),
-                            ))
-                        .toList()),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:
+                      serverQuestion.getOptions().asMap().entries.map((entry) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 7.0),
+                      child: ElevatedButton(
+                        onPressed: () => verifierReponse(entry.key),
+                        child: Text(entry.value,
+                            style: const TextStyle(fontSize: 18.0)),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Text(
-                  'Score: $score',
+                  'Score : $score / ${serverQuestion.getTotalQuestions()}',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               )
             ],
